@@ -1,4 +1,5 @@
 
-To be able to play/try JettWreck you should download the source code and make sure you have python and pygame installed in your computer.
+To be able to play/try JettWreck you should download the source code and make sure you have python and pygame and the right sprites installed in your computer.
+Sprites = https://drive.google.com/drive/folders/1SyfzFvsQToGDNyuy1DDycWIvM-M8B-e8?usp=sharing
 
 P.S. You might not be able to run JettWrect's source code due to not having the right sprite installed in your computer.
