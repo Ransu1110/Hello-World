@@ -5,15 +5,19 @@ bg = pygame.image.load("sprites/background.png")
 icon = pygame.image.load("sprites/Skul.png")
 pygame.display.set_icon(icon)
 pygame.display.set_caption("JettWreck")
-right_dash = pygame.image.load("sprites/jett dash right.png")
-left_dash = pygame.image.load("sprites/jett dash left.png")
+# indicator for which side to dash
 right = False
 left = False
-x = 500
-y = 500
+# for dash
 isDash = False
 dash_power = 6
+# for screen size/ window size/ surface size
+x = 500
+y = 500
+# surface/display/window
 window = pygame.display.set_mode((x, y))
+# indicator if the user want to shoot
+shooting = False
 
 
 class Player:
@@ -28,6 +32,17 @@ class Player:
         win.blit(player_sprite, (self.p_x, self.p_y))
 
 
+class Bullet:
+    def __init__(self, b_x, b_y, speed):
+        self.b_x = b_x
+        self.b_y = b_y
+        self.speed = speed
+
+    def draw(self, win):
+        bullet_sprite = pygame.image.load("sprites/orangeball.png")
+        win.blit(bullet_sprite, (self.b_x, self.b_y))
+
+
 class Enemy:
     def __init__(self, e_x, e_y):
         self.e_x = e_x
@@ -39,16 +54,26 @@ class Enemy:
 
 
 def redraws():
+    global shooting
     window.blit(bg, (0, 0))
     player.draw(window)
-    enemy.draw(window)
+    # bullet
+    if shooting:
+        bullet.draw(window)
+        bullet.b_y -= bullet.speed
+
+        if bullet.b_y < -1:
+            shooting = False
+    #    enemy.draw(window)
 
     pygame.display.update()
 
 
 # mainloop
 player = Player(250, 400)
+bullet = Bullet(0, 0, 15)
 enemy = Enemy(0, 60)
+
 run = True
 while run:
     pygame.time.delay(30)
@@ -64,8 +89,17 @@ while run:
         player.p_y -= player.player_speed
 
     # S
-    if key[pygame.K_s] and player.p_y < y:
+    if key[pygame.K_s] and player.p_y < y - 64:
         player.p_y += player.player_speed
+
+    # E To shoot bullet/s
+    if not shooting:
+        if key[pygame.K_e]:
+            shooting = True
+            bullet.b_x = player.p_x + 16
+            bullet.b_y = player.p_y
+        else:
+            shooting = False
 
     if not isDash:
         # A
@@ -74,10 +108,11 @@ while run:
             left = True
             right = False
         # D
-        if key[pygame.K_d] and player.p_x < x - 64:
+        if key[pygame.K_d] and player.p_x <= x - 64:
             player.p_x += player.player_speed
             right = True
             left = False
+
     if left:
         if not isDash:
 
@@ -85,7 +120,7 @@ while run:
             if key[pygame.K_SPACE]:
                 isDash = True
         else:
-            if dash_power >= 1:
+            if dash_power >= 1 and player.p_x > -1:
                 player.p_x -= (dash_power ** 2)
                 dash_power -= 1
             else:
@@ -98,14 +133,13 @@ while run:
             if key[pygame.K_SPACE]:
                 isDash = True
         else:
-            if dash_power >= 0:
+            if dash_power >= 0 and player.p_x < x - 64:
                 player.p_x += (dash_power ** 2)
                 dash_power -= 1
             else:
                 isDash = False
                 dash_power = 6
     window.fill((0, 0, 0))
-    print(player.p_x)
-    print(dash_power)
+    print(shooting)
     redraws()
 pygame.quit()
