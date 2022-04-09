@@ -72,7 +72,7 @@ class Enemy:
 
 
 def redraws():
-    global shooting, hit, crash
+    global shooting, hit, crash, run
 
     window.blit(bg, (0, 0))
     player.draw(window)
@@ -92,7 +92,8 @@ def redraws():
         hit = True
         shooting = False
     if player_hitbox.colliderect(enemy_hitbox):
-        crash = True
+        pygame.quit()
+        run = False
 
     # score system
     score_display = font.render("Score:" + str(score), False, white)
